@@ -3,8 +3,7 @@ package io.freestyle
 import cats.Applicative
 import cats.instances.future._
 import io.freestyle.implicits._
-import io.freestyle.logging._
-import io.freestyle.logging.implicits._
+import io.freestyle.loggingJS.implicits._
 import org.scalatest._
 
 import scala.concurrent._
@@ -27,24 +26,4 @@ class LoggingTests extends AsyncWordSpec with Matchers {
     }
 
   }
-}
-
-object algebras {
-
-  @free trait NonLogging[F[_]] {
-    def x: FreeS[F, Int]
-  }
-
-  implicit def nonLoggingInterpreter: NonLogging.Interpreter[Future] =
-    new NonLogging.Interpreter[Future] {
-      def xImpl: Future[Int] = Future.successful(1)
-    }
-
-  @module trait App[F[_]] {
-    val nonLogging: NonLogging[F]
-    val loggingM: LoggingM[F]
-  }
-
-  val app = App[App.T]
-
 }
